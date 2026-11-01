@@ -33,9 +33,13 @@ O reconhecimento de voz usa código nativo, então não roda no app Expo Go. Par
 npx eas-cli@latest build --profile development --platform android
 ```
 
-## Banco de dados
+## Supabase (do zero)
 
-Antes de usar o app, rode no SQL Editor do Supabase o arquivo `supabase/migrations/20261101000000_mvp_ajustes.sql`. Ele adiciona as colunas que o app usa e remove a política que deixava o usuário se dar Premium sozinho.
+1. Crie um projeto em [supabase.com](https://supabase.com): região **South America (São Paulo)**, plano **Free**.
+2. **Banco:** em SQL Editor > New query, cole todo o arquivo `supabase/migrations/20261101000000_schema_inicial.sql` e clique em Run. Ele cria as tabelas `registrations` e `subscriptions`, com RLS (cada pessoa só vê o que é seu) e plano gratuito automático para contas novas.
+3. **Login por e-mail:** em Authentication > Sign In / Providers > Email, para testar mais rápido, desligue "Confirm email".
+4. **Função de voz:** em Edge Functions > Deploy a new function > Via Editor, dê o nome `process-voice`, cole o conteúdo de `supabase/functions/process-voice/index.ts` e clique em Deploy.
+5. **Opcional, IA melhor:** em Edge Functions > Secrets, crie `ANTHROPIC_API_KEY` com uma chave de [console.anthropic.com](https://console.anthropic.com). Sem ela, a função usa uma regra simples em português, que já entende frases como “guardei as chaves na gaveta da cozinha”.
 
 ## Comandos úteis
 
