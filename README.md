@@ -27,7 +27,9 @@ Ainda não: login com Google e Apple, plano Premium, checklist de saída.
    npx expo start
    ```
 
-O reconhecimento de voz usa código nativo, então não roda no app Expo Go. Para testar no celular, gere uma versão de desenvolvimento:
+4. Instale o app **Expo Go** no celular e escaneie o QR code que aparece no terminal (celular e computador na mesma rede Wi-Fi).
+
+No Expo Go o app funciona inteiro, mas a frase é digitada: o reconhecimento de voz usa código nativo, que o Expo Go não tem. Para testar a voz, gere uma versão de desenvolvimento:
 
 ```bash
 npx eas-cli@latest build --profile development --platform android

@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { ExpoSpeechRecognitionModule, useSpeechRecognitionEvent } from 'expo-speech-recognition';
+
 import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -8,6 +8,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button, T, usePalette } from '@/components/ui';
 import { Font, Space } from '@/constants/theme';
 import { extractFromText } from '@/lib/registrations';
+import { Speech, useSpeechEvent } from '@/lib/speech';
 
 type Phase = 'pedindo' | 'ouvindo' | 'pronto' | 'sem-voz';
 
@@ -22,13 +23,13 @@ export default function RecordScreen() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useSpeechRecognitionEvent('start', () => setPhase('ouvindo'));
-  useSpeechRecognitionEvent('end', () => setPhase((p) => (p === 'ouvindo' ? 'pronto' : p)));
-  useSpeechRecognitionEvent('result', (e) => {
+  useSpeechEvent('start', () => setPhase('ouvindo'));
+  useSpeechEvent('end', () => setPhase((p) => (p === 'ouvindo' ? 'pronto' : p)));
+  useSpeechEvent('result', (e) => {
     const t = e.results[0]?.transcript;
     if (t) setText(t);
   });
-  useSpeechRecognitionEvent('error', (e) => {
+  useSpeechEvent('error', (e) => {
     if (e.error === 'aborted') return;
     setError('Não consegui ouvir. Tente de novo ou digite.');
     setPhase('pronto');
@@ -37,18 +38,18 @@ export default function RecordScreen() {
   async function start() {
     setError(null);
     try {
-      if (!ExpoSpeechRecognitionModule.isRecognitionAvailable()) {
+      if (!Speech || !Speech.isRecognitionAvailable()) {
         setPhase('sem-voz');
         return;
       }
-      const perm = await ExpoSpeechRecognitionModule.requestPermissionsAsync();
+      const perm = await Speech.requestPermissionsAsync();
       if (!perm.granted) {
         setPhase('sem-voz');
         setError('Sem permissão do microfone. Você pode digitar.');
         return;
       }
       setText('');
-      ExpoSpeechRecognitionModule.start({ lang: 'pt-BR', interimResults: true });
+      Speech.start({ lang: 'pt-BR', interimResults: true });
     } catch {
       setPhase('sem-voz');
     }
@@ -56,11 +57,11 @@ export default function RecordScreen() {
 
   useEffect(() => {
     start();
-    return () => ExpoSpeechRecognitionModule.abort();
+    return () => Speech?.abort();
   }, []);
 
   async function done() {
-    if (phase === 'ouvindo') ExpoSpeechRecognitionModule.stop();
+    if (phase === 'ouvindo') Speech?.stop();
     const phrase = text.trim();
     if (!phrase) {
       setError('Diga ou digite onde guardou, por exemplo: “chaves na gaveta da cozinha”.');
@@ -108,7 +109,7 @@ export default function RecordScreen() {
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={listening ? 'Parar de ouvir' : 'Falar de novo'}
-          onPress={listening ? () => ExpoSpeechRecognitionModule.stop() : start}
+          onPress={listening ? () => Speech?.stop() : start}
           style={[styles.ring1, { opacity: listening ? 1 : 0.7 }]}>
           <View style={styles.ring2}>
             <View style={styles.core}>
