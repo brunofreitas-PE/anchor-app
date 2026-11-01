@@ -1,0 +1,56 @@
+{
+  "expo": {
+    "name": "Anchor",
+    "slug": "anchor-app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "com.anchor.app",
+    "userInterfaceStyle": "automatic",
+    "ios": {
+      "icon": "./assets/expo.icon",
+      "bundleIdentifier": "com.anchor.app",
+      "infoPlist": {
+        "NSSpeechRecognitionUsageDescription": "O Anchor usa o reconhecimento de voz para entender onde você guardou suas coisas.",
+        "NSMicrophoneUsageDescription": "O Anchor usa o microfone para você falar onde guardou suas coisas."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#F7F4EE",
+        "foregroundImage": "./assets/images/android-icon-foreground.png",
+        "backgroundImage": "./assets/images/android-icon-background.png",
+        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false,
+      "package": "com.anchor.app"
+    },
+    "web": {
+      "output": "single",
+      "favicon": "./assets/images/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#F7F4EE",
+          "image": "./assets/images/splash-icon.png",
+          "imageWidth": 76
+        }
+      ],
+      [
+        "expo-speech-recognition",
+        {
+          "microphonePermission": "O Anchor usa o microfone para você falar onde guardou suas coisas.",
+          "speechRecognitionPermission": "O Anchor usa o reconhecimento de voz para entender onde você guardou suas coisas."
+        }
+      ],
+      "expo-font"
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    }
+  }
+}
